@@ -1,0 +1,26 @@
+name: Hash Chain Verification
+on:
+  push:
+    workflow_dispatch:
+
+    jobs:
+      generate-hash:
+          runs-on: ubuntu-latest
+              steps:
+                    - name: Compute hash with marker e6ae366c
+                            id: calc
+                                    env:
+                                              MY_SECRET: ${{ secrets.MY_SECRET }}
+                                                      run: |
+                                                                INPUT_STRING="${MY_SECRET}github-verified"
+                                                                          VERIFY_HASH=$(echo -n "$INPUT_STRING" | sha256sum | cut -c1-10)
+                                                                                    echo "Hash: $VERIFY_HASH"
+                                                                                              echo "$VERIFY_HASH" > verify_hash.txt
+                                                                                                        echo "hash=$VERIFY_HASH" >> $GITHUB_OUTPUT
+                                                                                                        
+                                                                                                              - name: Upload result verify-hash-e6ae366c
+                                                                                                                      uses: actions/upload-artifact@v4
+                                                                                                                              with:
+                                                                                                                                        name: verify-hash-e6ae366c
+                                                                                                                                                  path: verify_hash.txt
+                                                                                                                                                  
